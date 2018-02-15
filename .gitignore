@@ -1,0 +1,3 @@
+training_data/img
+training_data/clothestype_*
+training_data/*.zip
