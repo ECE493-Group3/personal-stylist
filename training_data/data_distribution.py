@@ -2,7 +2,11 @@
 
 import os
 import shutil
+import random
 from enum import Enum
+
+NUMBER_OF_IMAGES_UPLOAD = 1500
+TOTAL_IMAGES = 289222
 
 class ClothesType(Enum):
     Top = 1
@@ -29,9 +33,15 @@ def divide_by_categories(cat_type):
 
     images_by_type = {t: [] for t in ClothesType}
 
+    random.seed()
+    images_to_be_used = set(random.sample(range(TOTAL_IMAGES), NUMBER_OF_IMAGES_UPLOAD))
+
     with open(filename) as f:
 
-        for line in f.readlines()[2:]:
+        for i, line in enumerate(f.readlines()[2:]):
+            if i not in images_to_be_used:
+                continue
+
             imgfile, category = line.split()
             typ = cat_type[int(category)]
             images_by_type[typ].append(imgfile)
