@@ -1,5 +1,7 @@
 #! /usr/bin/env python3
 
+import os
+import shutil
 from enum import Enum
 
 class ClothesType(Enum):
@@ -36,6 +38,18 @@ def divide_by_categories(cat_type):
 
     return images_by_type
 
+def make_folders(types):
+
+    for typ in ClothesType:
+        directory = str(typ).lower().replace('.', '_')
+
+        if not os.path.exists(directory):
+            os.mkdir(directory)
+
+        for imgfile in types[typ]:
+            copy_name = imgfile.replace(os.path.sep, '_')
+            shutil.copy2(imgfile, os.path.join(directory, copy_name))
+
 if __name__=="__main__":
     t, n = get_category_types()
 
@@ -54,3 +68,8 @@ if __name__=="__main__":
         with open(filename, 'w') as f:
             for cloth in types[typ]:
                 f.write(cloth + '\n')
+
+    print("Making directories. Assumes image data is in directory img")
+    make_folders(types)
+
+    print("Done")
