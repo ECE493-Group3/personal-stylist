@@ -14,7 +14,8 @@ import random
 DATA_DIRECTORY = 'DATA'
 LIST_CATEGORY_IMG_FILE = os.path.join(DATA_DIRECTORY, 'Anno', 'list_category_img.txt')
 LIST_CATEGORY_CLOTH_FILE = os.path.join(DATA_DIRECTORY, 'Anno', 'list_category_cloth.txt')
-TSV_FILE = 'sample_category_img.txt'
+TSV_FILE_TRAIN = 'sample_category_img_train.txt'
+TSV_FILE_VALIDATION = 'sample_category_img_validation.txt'
 
 def get_category_types():
 
@@ -45,10 +46,17 @@ def make_sample_table(sample_size, category_type):
 
         return result
 
-def make_tsv(table):
-    with open(TSV_FILE, 'w') as f:
-        f.writelines("{}\t{}\n".format(img, cat) for img, cat in table)
+def make_tsvs(table):
 
+    train_size = len(table) // 10 * 9
+    in_train = set(random.sample(range(len(table)), train_size))
+
+    train_table = [row for i, row in enumerate(table) if i in in_train]
+    validation_table = [row for i, row in enumerate(table) if i not in in_train]
+
+    for filename, table in zip([TSV_FILE_TRAIN, TSV_FILE_VALIDATION], [train_table, validation_table]):
+        with open(filename, 'w') as f:
+            f.writelines("{}\t{}\n".format(img, cat) for img, cat in table)
 
 if __name__=="__main__":
 
@@ -60,6 +68,6 @@ if __name__=="__main__":
     cat_types = get_category_types()
     sample_size = int(sys.argv[1])
     table = make_sample_table(sample_size, cat_types)
-    make_tsv(table)
+    make_tsvs(table)
 
     print("Done")
