@@ -27,7 +27,7 @@ def load_images(img_filename):
     with open(img_filename, 'r') as tsv_f:
         for line in tsv_f.readlines():
             imgfile, cat = line.split('\t')
-            labels.append(int(cat))
+            labels.append(int(cat) - 1)
 
             imgfullpath = os.path.join(DATA_DIRECTORY, imgfile)
             img = cv2.imread(imgfullpath)
